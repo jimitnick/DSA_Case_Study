@@ -153,7 +153,7 @@ def run_interactive_checker():
     DESIRED_FP_PROBABILITY = 0.01
 
     url_filter = MaliciousURLFilter(EXPECTED_URLS_IN_BLACKLIST, DESIRED_FP_PROBABILITY)
-    ip_filter = MaliciousIPFilter(EXPECTED_IPS_IN_BLACKLIST, DESIRED_FP_PROBABILITY)
+    ip_filter = MaliciousIPFilter(known_malicious_ips, DESIRED_FP_PROBABILITY)
 
     for url in known_malicious_urls:
         url_filter.add(url.strip().lower())
