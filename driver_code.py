@@ -1,5 +1,6 @@
 from malicious_ip_filter import MaliciousIPFilter 
 from malicious_url_filter import MaliciousURLFilter 
+from search_indexer import run_crawler_simulation
 
 from helper_functions import load_malicious_urls_from_csv,load_ips_from_text_file
 
@@ -9,8 +10,8 @@ def run_interactive_checker():
     """
     #  Step 1: Load the data
     # The filename should match what you saved the CSV as.
-    URL_DATASET_FILENAME = 'malicious_urls.csv'
-    IP_DATASET_FILENAME = 'bad_ip_dataset.txt'
+    URL_DATASET_FILENAME = 'datasets/malicious_urls.csv'
+    IP_DATASET_FILENAME = 'datasets/bad_ip_dataset.txt'
     known_malicious_urls = load_malicious_urls_from_csv(URL_DATASET_FILENAME)
     known_malicious_ips = load_ips_from_text_file(IP_DATASET_FILENAME)
     if known_malicious_urls is None:
@@ -25,11 +26,13 @@ def run_interactive_checker():
     print("-------------------------------")
     print("1. Check for malicious URL")
     print("2. Check for malicious IP")
+    print("3. Check for website ")
+    print("4. Exit")
 
     print()
     choice = 0
     
-    while (choice != 3):
+    while (choice != 4):
         choice = int(input("Enter the choice : "))
         if (choice == 1):
             url_filter = MaliciousURLFilter(EXPECTED_URLS_IN_BLACKLIST, DESIRED_FP_PROBABILITY)
@@ -58,7 +61,7 @@ def run_interactive_checker():
                 else:
                     print(f"   > ✅ Result: '{user_input}' is DEFINITELY SAFE (not on our blacklist).")
         elif (choice == 2):
-            ip_filter = MaliciousIPFilter(EXPECTED_IPS_IN_BLACKLIST, DESIRED_FP_PROBABILITY)
+            ip_filter = MaliciousIPFilter(known_malicious_ips, DESIRED_FP_PROBABILITY)
 
             # Step 3: Populate the Filter 
             print(f"--- Populating filter with {len(known_malicious_ips)} known malicious IPs... ---")
@@ -83,6 +86,8 @@ def run_interactive_checker():
                     print("   > Recommendation: Avoid this site.")
                 else:
                     print(f"   > ✅ Result: '{user_input}' is DEFINITELY SAFE (not on our blacklist).")
+        elif (choice == 3):
+            run_crawler_simulation()
 
 if __name__ == "__main__":
     run_interactive_checker()
