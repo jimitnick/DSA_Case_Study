@@ -1,10 +1,6 @@
 import math
 import csv
 
-# ==============================================================================
-#  BLOOM FILTER IMPLEMENTATION
-# ==============================================================================
-
 class VisitedURLFilter:
     """
     A Bloom Filter implementation from scratch, used to track visited URLs
@@ -21,10 +17,10 @@ class VisitedURLFilter:
         self.bit_array = [0] * self.size
         
         print(f"## Visited URL Filter Initialized ##")
-        print(f"   - Estimated unique URLs (n): {num_items}")
-        print(f"   - FP Probability (p): {fp_prob:.2%}")
-        print(f"   - Optimal Size (m): {self.size} bits")
-        print(f"   - Optimal Hashes (k): {self.hash_count}\n")
+        print(f"- Estimated unique URLs (n): {num_items}")
+        print(f"- FP Probability (p): {fp_prob:.2%}")
+        print(f"- Optimal Size (m): {self.size} bits")
+        print(f"- Optimal Hashes (k): {self.hash_count}\n")
 
     def _calculate_optimal_size(self, n, p):
         m = - (n * math.log(p)) / (math.log(2) ** 2)
@@ -51,23 +47,22 @@ class VisitedURLFilter:
             self.bit_array[digest] = 1
 
     def __contains__(self, item):
+        # If any bit is 0 → the item was never added (definitely not visited).
+        # If all bits are 1 → the item is probably visited (false positive possible).
         for digest in self._get_hashes(item):
             if self.bit_array[digest] == 0:
                 return False
         return True
 
-# ==============================================================================
+
 #  WEB CRAWLER SIMULATION (WITHOUT PERSISTENCE)
-# ==============================================================================
+
 
 def run_crawler_simulation():
-    """
-    Simulates a web crawler using a Bloom filter for a single run.
-    """
-    DATASET_FILE = "tranco_list.csv"
+    DATASET_FILE = "datasets/tranco_list.csv"
     CRAWL_LIMIT = 50000  # Process the top 50,000 sites from the list
 
-    # --- Step 1: Load the list of URLs to crawl ---
+    # Load the list of URLs to crawl 
     try:
         with open(DATASET_FILE, 'r') as f:
             reader = csv.reader(f)
@@ -78,12 +73,12 @@ def run_crawler_simulation():
         print(f"[Error] Dataset '{DATASET_FILE}' not found. Please download it from Tranco.")
         return
 
-    # --- Step 2: Initialize a fresh filter ---
+    # Initialize a fresh filter
     url_filter = VisitedURLFilter(num_items=len(urls_to_process), fp_prob=0.01)
 
     print(f"## 🕷️ Starting Web Crawler Simulation ##")
     
-    # --- Step 3: Process all URLs ---
+    # Process all URLs
     new_urls_found = 0
     duplicates_skipped = 0
     for url in urls_to_process:
@@ -96,11 +91,10 @@ def run_crawler_simulation():
             duplicates_skipped += 1
     
     print(f"--- Processing complete. ---")
-    print(f"   - Unique URLs indexed: {new_urls_found}")
-    print(f"   - Duplicate URLs skipped: {duplicates_skipped}")
+    print(f"- Unique URLs indexed: {new_urls_found}")
+    print(f"- Duplicate URLs skipped: {duplicates_skipped}")
 
-    # --- Step 4: Enter Interactive Mode ---
-    print("\n## 🕵️ Interactive 'is_visited' Checker ##")
+    print("\n Interactive 'is_visited' Checker ")
     print("Enter a domain to check if it was visited in this session.")
     
     while True:
@@ -111,9 +105,9 @@ def run_crawler_simulation():
             continue
         
         if user_input in url_filter:
-            print(f"   > ✅ Result: '{user_input}' was PROBABLY VISITED by the crawler.")
+            print(f"> Result: '{user_input}' was PROBABLY VISITED by the crawler.")
         else:
-            print(f"   > ❌ Result: '{user_input}' was DEFINITELY NOT VISITED.")
+            print(f"> Result: '{user_input}' was DEFINITELY NOT VISITED.")
 
 if __name__ == "__main__":
     run_crawler_simulation()
