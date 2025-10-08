@@ -1,6 +1,6 @@
 import math
 import csv
-#  BLOOM FILTER IMPLEMENTATION
+
 class VisitedURLFilter:
     """
     A Bloom Filter implementation from scratch, used to track visited URLs
@@ -59,10 +59,7 @@ class VisitedURLFilter:
 
 
 def run_crawler_simulation():
-    """
-    Simulates a web crawler using a Bloom filter for a single run.
-    """
-    DATASET_FILE = "tranco_list.csv"
+    DATASET_FILE = "datasets/tranco_list.csv"
     CRAWL_LIMIT = 50000  # Process the top 50,000 sites from the list
 
     # Load the list of URLs to crawl 

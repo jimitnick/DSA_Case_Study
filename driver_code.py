@@ -1,15 +1,19 @@
 #Filter -one for URLs and one for IP addresses
 from malicious_ip_filter import MaliciousIPFilter 
 from malicious_url_filter import MaliciousURLFilter 
+from search_indexer import run_crawler_simulation
 
 # Helper functions to quickly load the malicious URL/IP data from files
 from helper_functions import load_malicious_urls_from_csv,load_ips_from_text_file
 
 def run_interactive_checker():
-    # File names where our malicious URL and IP lists are stored
-    URL_DATASET_FILENAME = 'malicious_urls.csv'
-    IP_DATASET_FILENAME = 'bad_ip_dataset.txt'
-    # Load the known bad URLs and IPs into memory
+    """
+    Main function to run the interactive malicious URL checker with real data.
+    """
+    #  Step 1: Load the data
+    # The filename should match what you saved the CSV as.
+    URL_DATASET_FILENAME = 'datasets/malicious_urls.csv'
+    IP_DATASET_FILENAME = 'datasets/bad_ip_dataset.txt'
     known_malicious_urls = load_malicious_urls_from_csv(URL_DATASET_FILENAME)
     known_malicious_ips = load_ips_from_text_file(IP_DATASET_FILENAME)
 
@@ -24,11 +28,13 @@ def run_interactive_checker():
     print("-------------------------------")
     print("1. Check for malicious URL")
     print("2. Check for malicious IP")
+    print("3. Check for website ")
+    print("4. Exit")
 
     print()
     choice = 0
-    # Menu 
-    while (choice != 3):
+    
+    while (choice != 4):
         choice = int(input("Enter the choice : "))
         if (choice == 1):
             # Make a Bloom filter just big enough for all known bad URLs
@@ -56,7 +62,9 @@ def run_interactive_checker():
                 else:
                     print(f"   >Result: '{user_input}' is DEFINITELY SAFE (not on our blacklist).")
         elif (choice == 2):
-            ip_filter = MaliciousIPFilter(EXPECTED_IPS_IN_BLACKLIST, DESIRED_FP_PROBABILITY)
+            ip_filter = MaliciousIPFilter(known_malicious_ips, DESIRED_FP_PROBABILITY)
+
+            # Step 3: Populate the Filter 
             print(f"--- Populating filter with {len(known_malicious_ips)} known malicious IPs... ---")
             for ip in known_malicious_ips:
                 ip_filter.add(ip)
@@ -74,7 +82,9 @@ def run_interactive_checker():
                     print(f"> Warning: '{user_input}' is PROBABLY MALICIOUS.")
                     print("> Recommendation: Avoid this site.")
                 else:
-                    print(f"> Result: '{user_input}' is DEFINITELY SAFE (not on our blacklist).")
+                    print(f"   > ✅ Result: '{user_input}' is DEFINITELY SAFE (not on our blacklist).")
+        elif (choice == 3):
+            run_crawler_simulation()
 
 if __name__ == "__main__":
     run_interactive_checker()
