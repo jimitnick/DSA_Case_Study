@@ -7,11 +7,11 @@ class MaliciousIPFilter:
     blacklist of IP addresses. It calculates its own optimal parameters (m and k) 
     and uses double hashing.
     """
+
     def __init__(self, malicious_ips: list[str], fp_prob: float):
         if not (0 < fp_prob < 1):
             raise ValueError("False positive probability must be between 0 and 1.")
         
-        # Step 1: Calculate optimal parameters based on the list size
         num_items = len(malicious_ips)
         if not num_items > 0:
             raise ValueError("The list of malicious IPs must not be empty.")

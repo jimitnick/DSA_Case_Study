@@ -57,7 +57,6 @@ def run_interactive_checker():
                     print(f"   >Result: '{user_input}' is DEFINITELY SAFE (not on our blacklist).")
         elif (choice == 2):
             ip_filter = MaliciousIPFilter(EXPECTED_IPS_IN_BLACKLIST, DESIRED_FP_PROBABILITY)
-
             print(f"--- Populating filter with {len(known_malicious_ips)} known malicious IPs... ---")
             for ip in known_malicious_ips:
                 ip_filter.add(ip)

@@ -1,15 +1,14 @@
 import csv 
-
+#Loading the malicious url from the csv file.
 def load_malicious_urls_from_csv(filename):
     urls = []
     print(f"--- Loading malicious URLs from '{filename}'... ---")
     try:
         with open(filename, 'r', encoding='utf-8') as f:
             reader = csv.reader(f)
-            next(reader)  # Skip the header row
+            next(reader) 
             for row in reader:
-                if row:  # Ensure the row is not empty
-                    # The URL is in the second column (index 1)
+                if row:  
                     urls.append(row[1])
     except FileNotFoundError:
         print(f"   [Error] The file '{filename}' was not found.")
@@ -21,7 +20,7 @@ def load_malicious_urls_from_csv(filename):
         
     print(f"--- Loaded {len(urls)} URLs successfully ---\n")
     return urls
-
+#Loading the ips from the text file.
 def load_ips_from_text_file(filename):
     ips = []
     print(f"--- Loading malicious IPs from '{filename}' ---")
