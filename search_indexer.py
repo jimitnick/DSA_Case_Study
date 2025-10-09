@@ -7,6 +7,7 @@ class VisitedURLFilter:
     for a web crawler to avoid re-fetching pages in a single session.
     """
     def __init__(self, num_items, fp_prob):
+        # ⏱️ Time Complexity: O(1)
         if not (0 < fp_prob < 1):
             raise ValueError("False positive probability must be between 0 and 1.")
         if not num_items > 0:
@@ -23,30 +24,36 @@ class VisitedURLFilter:
         print(f"- Optimal Hashes (k): {self.hash_count}\n")
 
     def _calculate_optimal_size(self, n, p):
+        # ⏱️ Time Complexity: O(1)
         m = - (n * math.log(p)) / (math.log(2) ** 2)
         return int(math.ceil(m))
 
     def _calculate_optimal_hash_count(self, m, n):
+        # ⏱️ Time Complexity: O(1)
         k = (m / n) * math.log(2)
         return int(math.ceil(k))
 
     def _hash_djb2(self, s: str):
+        # ⏱️ Time Complexity: O(n), where n is the length of the string `s`
         hash_val = 5381
         for char in s:
             hash_val = ((hash_val << 5) + hash_val) + ord(char)
         return hash_val
 
     def _get_hashes(self, item):
+        # ⏱️ Time Complexity: O(k), where k = number of hash functions (self.hash_count)
         hash1 = hash(item)
         hash2 = self._hash_djb2(item)
         for i in range(self.hash_count):
             yield (hash1 + i * hash2) % self.size
             
     def add(self, item):
+        # ⏱️ Time Complexity: O(k), where k = number of hash functions
         for digest in self._get_hashes(item):
             self.bit_array[digest] = 1
 
     def __contains__(self, item):
+        # ⏱️ Time Complexity: O(k), where k = number of hash functions
         # If any bit is 0 → the item was never added (definitely not visited).
         # If all bits are 1 → the item is probably visited (false positive possible).
         for digest in self._get_hashes(item):
@@ -57,8 +64,13 @@ class VisitedURLFilter:
 
 #  WEB CRAWLER SIMULATION (WITHOUT PERSISTENCE)
 
-
 def run_crawler_simulation():
+    # ⏱️ Time Complexity:
+    # - Loading CSV: O(C), where C = number of URLs (CRAWL_LIMIT)
+    # - Initializing filter: O(1)
+    # - Processing all URLs: O(C * k), where k = number of hash functions
+    # - Each membership check / add: O(k)
+    # - Overall: O(C * k)
     DATASET_FILE = "datasets/tranco_list.csv"
     CRAWL_LIMIT = 50000
 
