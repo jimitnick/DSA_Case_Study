@@ -33,6 +33,7 @@ def canonicalize_url(raw_url: str) -> str:
 
     Returns canonicalized URL string on success, or an empty string on failure.
     """
+    # ⏱️ Time Complexity: O(n), where n is the length of the URL string
     try:
         parsed = urlparse(raw_url)
     except Exception:
@@ -93,6 +94,7 @@ def is_valid_url_format(raw_url: str) -> bool:
       - allowed scheme (http/https)
       - no suspicious patterns like javascript:, data:, embedded credentials, or obvious binary downloads
     """
+    # ⏱️ Time Complexity: O(n), where n is the length of the URL string
     if not raw_url or not raw_url.strip():
         return False
 
@@ -128,6 +130,7 @@ def is_valid_ip_format(ip_str: str) -> bool:
     """
     Validate IPv4 or IPv6 address using ipaddress module. Returns True if valid.
     """
+    # ⏱️ Time Complexity: O(1)
     try:
         # ip_address will raise ValueError for invalid addresses
         ipaddress.ip_address(ip_str)
@@ -137,6 +140,17 @@ def is_valid_ip_format(ip_str: str) -> bool:
 
 
 def run_interactive_checker():
+    """
+    Main function to run the interactive malicious URL checker with real data.
+    """
+    # ⏱️ Time Complexity:
+    # - Loading data: O(U + I), where U = number of URLs, I = number of IPs
+    # - Populating Bloom filters: O(U + I)
+    # - Each lookup/query: O(k), where k = number of hash functions in Bloom filter (typically constant)
+    # - Overall interactive loop: O(U + I + Q), where Q = number of user queries
+    # Therefore total complexity ≈ O(U + I + Q)
+    #  Step 1: Load the data
+    # The filename should match what you saved the CSV as.
     URL_DATASET_FILENAME = 'datasets/malicious_urls.csv'
     IP_DATASET_FILENAME = 'datasets/bad_ip_dataset.txt'
 
