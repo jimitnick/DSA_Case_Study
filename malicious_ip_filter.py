@@ -3,9 +3,7 @@ import math
 
 class MaliciousIPFilter:
     """
-    A Bloom Filter implementation optimized for high-speed screening of a 
-    blacklist of IP addresses. It calculates its own optimal parameters (m and k) 
-    and uses double hashing.
+    An implementation of the Bloom Filter that is optimised for fast screening of an IP address blacklist. It employs double hashing and determines its own optimal parameters (m and k).
     """
     # m,n- sizes of the bit arrays.
     def __init__(self, malicious_ips: list[str], fp_prob: float):
