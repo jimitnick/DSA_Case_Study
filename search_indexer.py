@@ -60,34 +60,29 @@ class VisitedURLFilter:
 
 def run_crawler_simulation():
     DATASET_FILE = "datasets/tranco_list.csv"
-    CRAWL_LIMIT = 50000  # Process the top 50,000 sites from the list
+    CRAWL_LIMIT = 50000
 
-    # Load the list of URLs to crawl 
     try:
         with open(DATASET_FILE, 'r') as f:
             reader = csv.reader(f)
-            # Read all domains up to our limit
             urls_to_process = [row[1] for i, row in enumerate(reader) if i < CRAWL_LIMIT]
         print(f"--- Successfully loaded {len(urls_to_process)} URLs to process. ---\n")
     except FileNotFoundError:
         print(f"[Error] Dataset '{DATASET_FILE}' not found. Please download it from Tranco.")
         return
 
-    # Initialize a fresh filter
     url_filter = VisitedURLFilter(num_items=len(urls_to_process), fp_prob=0.01)
 
     print(f"## 🕷️ Starting Web Crawler Simulation ##")
     
-    # Process all URLs
     new_urls_found = 0
     duplicates_skipped = 0
     for url in urls_to_process:
+        # CORRECTED LINE: Use the 'in' operator
         if url not in url_filter:
-            # Simulate fetching and indexing the new URL
             url_filter.add(url)
             new_urls_found += 1
         else:
-            # This URL is a duplicate in our list
             duplicates_skipped += 1
     
     print(f"--- Processing complete. ---")
@@ -104,10 +99,14 @@ def run_crawler_simulation():
         if not user_input:
             continue
         
+        # CORRECTED LINE: Use the 'in' operator
         if user_input in url_filter:
             print(f"> Result: '{user_input}' was PROBABLY VISITED by the crawler.")
         else:
             print(f"> Result: '{user_input}' was DEFINITELY NOT VISITED.")
+            
+            url_filter.add(user_input)
+            print(f"> Result: '{user_input}' has been added to the url filter.")
 
 if __name__ == "__main__":
     run_crawler_simulation()
